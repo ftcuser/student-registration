@@ -4,6 +4,9 @@ def DOCKER_HUB_USER="ftchub"
 def HTTP_PORT="8080"
 def HOST_PORT="8090"
 
+def hostUrl="ec2-34-232-13-73.compute-1.amazonaws.com"
+def hubPort="4444"
+
 // Tag settings
 
 def String PipelineEnvironment = "SEVIS-Challenge"
@@ -115,7 +118,7 @@ node {
     }
     
     stage('Functional Test') {
-        //sh "mvn -f pom-selenium.xml test -Dapp.baseurl=http://ec2-34-232-13-73.compute-1.amazonaws.com:8090/student-registration/index.html -Dselenium.hub=http://ec2-34-232-13-73.compute-1.amazonaws.com:4444/wd/hub";    }
+     sh "mvn -f pom-selenium.xml test -Dapp.baseurl=http://${hostUrl}:${HOST_PORT}/student-registration/index.html -Dselenium.hub=http://${hostUrl}:${hubPort}/wd/hub";    }
     
     sendEmail(SuccessSubject, SuccessBody, SuccessRecipient, ReplyTo)	
    }
