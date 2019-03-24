@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.citizant</groupId>
-  <artifactId>usermanager</artifactId>
+  <artifactId>student-registration</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>usermanager Maven Webapp</name>
+  <name>Student Registration Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
 		<spring.version>3.0.5.RELEASE</spring.version>
@@ -87,7 +87,7 @@
 	<dependency>
 	    <groupId>org.seleniumhq.selenium</groupId>
 	    <artifactId>selenium-java</artifactId>
-	    <version>2.53.0</version>
+	    <version>3.0.1</version>
 	 </dependency>
 	<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-htmlunit-driver -->
 	<dependency>
@@ -103,7 +103,7 @@
 	 
   </dependencies>
   <build>
-    <finalName>usermanager</finalName>
+    <finalName>student-registration</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -115,8 +115,7 @@
             <webdriver.chrome.driver>/Users/stevenwang/Documents/Apps/chromedriver</webdriver.chrome.driver>         
           </systemPropertyVariables>
           <excludes>
-          		<exclude>**/HomePageTest.java</exclude>
-          		<exclude>**/UserServiceTest.java</exclude>         		
+          		<exclude>**/*WebTest.java</exclude>     		
           </excludes>
         </configuration>
         <executions>        
