@@ -1,4 +1,4 @@
-def CONTAINER_NAME="angular-pipeline"
+def CONTAINER_NAME="student-registration"
 def CONTAINER_TAG="latest"
 def DOCKER_HUB_USER="ftchub"
 def HTTP_PORT="8080"
@@ -8,7 +8,7 @@ def HOST_PORT="8090"
 
 def String PipelineEnvironment = "SEVIS-Challenge"
 def String ProjectName="${PipelineEnvironment}"
-def String baseTag = "[OSJ][${PipelineEnvironment}]"
+def String baseTag = "[${PipelineEnvironment}]"
 def String successTag = "$baseTag[SUCCESS][$ProjectName]"
 def String infoTag = "$baseTag[INFO][$ProjectName]"
 def String failTag = "$baseTag[FAIL][$ProjectName]"
@@ -48,13 +48,13 @@ node {
     }
 
     stage('Build'){
-        sh "mvn -f usermanager/pom.xml clean install -DskipTests"
+        sh "mvn -f pom.xml clean install -DskipTests"
         sh "cd $WORKSPACE"
-        archiveArtifacts artifacts: 'usermanager/target/*.war', fingerprint: true
+        archiveArtifacts artifacts: 'target/*.war', fingerprint: true
     }
 
     stage('Junit Test'){;
-        sh "mvn -f usermanager/pom.xml test"
+        sh "mvn -f pom.xml test"
         sh "cd $WORKSPACE"
          step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
     }
@@ -66,8 +66,7 @@ node {
     stage('Quality Scan'){
         try {
             withSonarQubeEnv('SonarServer') {
-            sh "mvn -f usermanager/pom.xml sonar:sonar"
-            //sh "${scannerHome}/bin/sonar-scanner"
+            sh "mvn -f pom.xml sonar:sonar"
             }
         } catch(error){
             echo "The sonar server could not be reached ${error}"
@@ -76,7 +75,6 @@ node {
     
     stage("Quality Gate") {
                 timeout(time: 1, unit: 'HOURS') {
-                    //waitForQualityGate abortPipeline: true
                     def qg = waitForQualityGate() 
                     if (qg.status != 'OK') {
                          error "Pipeline aborted due to quality gate failure: ${qg.status}"
@@ -85,16 +83,14 @@ node {
     } 
 
     stage("Security Scan") {
-        sh 'mvn -f usermanager/pom.xml com.github.spotbugs:spotbugs-maven-plugin:3.1.1:spotbugs'
-        //step([$class: 'FindBugsPublisher', pattern: '**/target/spotbugsXml.xml'])
-        findbugs canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', pattern: '**/target/spotbugsXml.xml', unHealthy: ''    
-        //def spotbugs = scanForIssues tool: [$class: 'SpotBugs'], pattern: '**/target/spotbugsXml.xml'
-        //publishIssues issues:[spotbugs]
+       
+	    sh 'mvn -f pom.xml com.github.spotbugs:spotbugs-maven-plugin:3.1.1:spotbugs'
+	 
+	    //FindBug scanning
+        findbugs canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', pattern: '**/target/spotbugsXml.xml', unHealthy: ''            
         
-        //OWASP scanning
-        
+	    //OWASP scanning
         dependencyCheckAnalyzer datadir: '', hintsFile: '', includeCsvReports: false, includeHtmlReports: true, includeJsonReports: false, includeVulnReports: true, isAutoupdateDisabled: false, outdir: '', scanpath: '**/*.jar', skipOnScmChange: false, skipOnUpstreamChange: false, suppressionFile: '', zipExtensions: ''
-
         dependencyCheckPublisher canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/dependency-check-report.xml', unHealthy: ''
         
         
@@ -119,8 +115,7 @@ node {
     }
     
     stage('Functional Test') {
-        //sh "mvn -f usermanager/pom-selenium.xml test -Dapp.baseurl=http://ec2-34-232-13-73.compute-1.amazonaws.com:8090/usermanager/index.html -Dselenium.hub=http://ec2-34-232-13-73.compute-1.amazonaws.com:4444/wd/hub"
-    }
+        //sh "mvn -f pom-selenium.xml test -Dapp.baseurl=http://ec2-34-232-13-73.compute-1.amazonaws.com:8090/student-registration/index.html -Dselenium.hub=http://ec2-34-232-13-73.compute-1.amazonaws.com:4444/wd/hub";    }
     
     sendEmail(SuccessSubject, SuccessBody, SuccessRecipient, ReplyTo)	
 
@@ -134,20 +129,20 @@ def imagePrune(containerName){
 }
 
 def imageBuild(containerName, tag){
-    sh "cd usermanager;docker build -t $containerName:$tag  -t $containerName --pull --no-cache ."
+    sh "docker build -t $containerName:$tag  -t $containerName --pull --no-cache ."
     echo "Image build complete"
 }
 
 def pushToImage(containerName, tag, dockerUser, dockerPassword){
     sh "docker login -u $dockerUser -p $dockerPassword"
-    sh "cd usermanager;docker tag $containerName:$tag $dockerUser/$containerName:$tag"
-    sh "cd usermanager;docker push $dockerUser/$containerName:$tag"
+    sh "docker tag $containerName:$tag $dockerUser/$containerName:$tag"
+    sh "docker push $dockerUser/$containerName:$tag"
     echo "Image push complete"
 }
 
 def runApp(containerName, tag, dockerHubUser, httpPort, hostPort){
-    sh "cd usermanager;docker pull $dockerHubUser/$containerName"
-    sh "cd usermanager;docker run -d --rm -p $hostPort:$httpPort --name $containerName $dockerHubUser/$containerName:$tag"
+    sh "docker pull $dockerHubUser/$containerName"
+    sh "docker run -d --rm -p $hostPort:$httpPort --name $containerName $dockerHubUser/$containerName:$tag"
     echo "Application started on port: ${hostPort} (http)"
 }
 
