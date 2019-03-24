@@ -118,7 +118,7 @@ node {
         //sh "mvn -f pom-selenium.xml test -Dapp.baseurl=http://ec2-34-232-13-73.compute-1.amazonaws.com:8090/student-registration/index.html -Dselenium.hub=http://ec2-34-232-13-73.compute-1.amazonaws.com:4444/wd/hub";    }
     
     sendEmail(SuccessSubject, SuccessBody, SuccessRecipient, ReplyTo)	
-
+   }
 }
 
 def imagePrune(containerName){
