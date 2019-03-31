@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-md-3">
+        <span class="hipster img-fluid rounded"></span>
+    </div>
+    <div class="col-md-9">
+        <h1>Student and Exchange Visitor Program</h1>
+    
+        <div [ngSwitch]="isAuthenticated()">
+            <div class="alert alert-success" *ngSwitchCase="true">
+                <h4>What us SEVIS</h4>
+                SEVIS is a web-based system for maintaining information on international nonimmigrant 
+                students and exchange visitors in the United States. It is the core technology for the
+                DHS in this critical mission. SEVIS implements Section 641 of the Illegal Immigration 
+                Reform and Immigrant Responsibility Act of 1996, which requires DHS to collect current 
+                information from nonimmigrant students and exchange visitors continually during their 
+                course of stay in the United States. In addition, the Uniting and Strengthening America by 
+                Providing Appropriate Tools Required to Intercept and Obstruct Terrorism Act of 2001 
+                (USA PATRIOT Act; Public Law 107-56, amended Section 641) mandated implementation of 
+                SEVIS prior to Jan. 1, 2003.
+            </div>
+            <div class="alert alert-success" *ngSwitchCase="true">
+                    <span *ngIf="account"> You are logged in as user "{{account.login}}". </span>
+                </div>
+            <div class="alert alert-warning" *ngSwitchCase="false">
+                <span>If you want to </span>
+                <a class="alert-link" (click)="login()">sign in</a><span>, 
+                    you can try the default accounts:<br/>
+                    <ul>
+                        <li>Administrator (login="admin" and password="admin")</li> 
+                        <li>User (login="user" and password="user").</li>
+                    </ul>
+            </div>
+        </div>
+    </div>
+</div>

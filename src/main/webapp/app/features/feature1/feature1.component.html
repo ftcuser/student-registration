@@ -1,0 +1,87 @@
+<h2>Feature 1</h2>
+
+
+
+<div class="row" *ngIf="!editMode">    
+    <div class="col-12">
+        <div>
+            This is feature 1 page, It list all persons in SEVIS
+        </div>
+        <button class="btn btn-success btn-sm" (click)="addPerson()">Add Person</button>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th><span>First Name</span></th>
+                        <th><span>Last Name</span></th>
+                        <th><span>Age</span></th>
+                        <th><span>Port of Entry</span></th>
+                        <th><span>Entry Date</span></th>
+                        <th><span>VISA Type</span></th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tr *ngFor="let person of persons">
+                    <td><span>{{person.firstName}}</span></td>
+                    <td><span>{{person.lastName}}</span></td>
+                    <td><span>{{person.age}}</span></td>
+                    <td><span>{{person.portOfEntry}}</span></td>
+                    <td><span>{{person.entryDate}}</span></td>
+                    <td><span>{{person.visaType}}</span></td>
+                    <td>
+                        <button class="btn btn-success btn-sm" (click)="editPerson(person.id)">Edit</button>
+                        <button class="btn btn-danger btn-sm" (click)="deletePerson(person.id)">Delete</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="row" *ngIf="editMode">   
+  
+    <div class="col-3">     
+            <div class="form-group">
+                <label for="email">First Name:</label>
+                <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="selectedPerson.firstName">
+            </div>
+            <div class="form-group">
+                <label for="pwd">Last Name:</label>
+                <input type="text" class="form-control" id="lastName" name="lastName"  [(ngModel)]="selectedPerson.lastName">
+            </div>
+ 
+            <div class="form-group">
+                <label for="pwd">Age:</label>
+                <input type="text" class="form-control" id="age"  name="age" [(ngModel)]="selectedPerson.age">
+            </div>
+    </div>
+    <div class="col-3">     
+                <div class="form-group">
+                    <label for="email">Port Of Entry:</label>
+                    <input type="text" class="form-control" id="portOfEntry"  name="portOfEntry" [(ngModel)]="selectedPerson.portOfEntry">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Entry Date:</label>
+                    <input type="text" class="form-control" id="entryDate"  name="entryDate" [(ngModel)]="selectedPerson.entryDate">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Visa Type:</label>
+                    <select id="visaType" class="form-control" name="visaType" [(ngModel)]="selectedPerson.visaType">
+                        <option value="F1">F1</option>
+                        <option value="F2">F2</option>
+                        <option value="B1">B1</option>
+                        <option value="B2">B2</option>
+                        <option value="L">L</option>
+                    </select>
+                </div>
+    </div>
+</div>
+
+<div class="row"  *ngIf="editMode">
+    <div class="col-5">
+
+        <button class="btn btn-success btn-sm" (click)="savePerson()">Save</button>
+        <button class="btn btn-success btn-sm" (click)="cancelSavePerson()">Cancel</button>
+    </div>
+</div>

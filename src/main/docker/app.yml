@@ -1,0 +1,15 @@
+version: '2'
+services:
+    mongo-app:
+        image: mongo
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_DATA_MONGODB_URI=mongodb://mongo-mongodb:27017
+            - SPRING_DATA_MONGODB_DATABASE=Mongo
+            - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+        ports:
+            - 8090:8090
+    mongo-mongodb:
+        extends:
+            file: mongodb.yml
+            service: mongo-mongodb
